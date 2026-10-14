@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FINAL CCIA MUSLIMFEST 2026 - Scoreboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/display.css">
+</head>
+<body class="display-body">
+  <!-- Background Layer (gambar bisa diupload dari panel Admin) -->
+  <div id="bgLayer" class="bg-layer"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- Main Container -->
+  <main class="stage-container">
+    <!-- Top Header Bar -->
+    <header class="stage-header">
+      <h1 id="competitionTitle" class="competition-title">FINAL CCIA MUSLIMFEST 2026</h1>
+      <div id="displayRoundBadge" class="display-round-badge">
+        <span id="displayRoundText">BABAK 1: PERTANYAAN CEPAT</span>
+      </div>
+    </header>
+
+    <!-- Center Section: 3 Score Boxes -->
+    <section class="scoreboard-grid" id="scoreboardGrid">
+      <!-- Regu A -->
+      <article class="score-card card-team-a" id="card-A">
+        <div class="card-glow"></div>
+        <div class="leader-badge" id="crown-A">MEMIMPIN</div>
+        <div class="card-header">
+          <span class="team-badge" id="badge-A">A</span>
+          <h2 class="team-name" id="name-A">REGU A</h2>
+        </div>
+        <div class="score-display">
+          <div class="score-delta" id="delta-A"></div>
+          <span class="score-number" id="score-A">0</span>
+        </div>
+        <div class="rank-indicator" id="rank-A">Skor Terkini</div>
+      </article>
+
+      <!-- Regu B -->
+      <article class="score-card card-team-b" id="card-B">
+        <div class="card-glow"></div>
+        <div class="leader-badge" id="crown-B">MEMIMPIN</div>
+        <div class="card-header">
+          <span class="team-badge" id="badge-B">B</span>
+          <h2 class="team-name" id="name-B">REGU B</h2>
+        </div>
+        <div class="score-display">
+          <div class="score-delta" id="delta-B"></div>
+          <span class="score-number" id="score-B">0</span>
+        </div>
+        <div class="rank-indicator" id="rank-B">Skor Terkini</div>
+      </article>
+
+      <!-- Regu C -->
+      <article class="score-card card-team-c" id="card-C">
+        <div class="card-glow"></div>
+        <div class="leader-badge" id="crown-C">MEMIMPIN</div>
+        <div class="card-header">
+          <span class="team-badge" id="badge-C">C</span>
+          <h2 class="team-name" id="name-C">REGU C</h2>
+        </div>
+        <div class="score-display">
+          <div class="score-delta" id="delta-C"></div>
+          <span class="score-number" id="score-C">0</span>
+        </div>
+        <div class="rank-indicator" id="rank-C">Skor Terkini</div>
+      </article>
+    </section>
+
+    <!-- Bottom Stage Info Bar -->
+    <footer class="stage-footer">
+      <div class="sync-status">
+        <span class="sync-dot" id="syncDot"></span>
+        <span class="sync-label" id="syncText">Terhubung Real-time</span>
+      </div>
+      <div class="stage-controls">
+        <button id="btnSound" class="icon-btn" title="Aktifkan / Bisukan Suara">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </button>
+        <button id="btnFullscreen" class="icon-btn" title="Layar Penuh (F11)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        </button>
+        <a href="/admin" target="_blank" class="admin-link-btn" title="Buka Panel Admin">Panel Admin ↗</a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="/js/sound.js"></script>
+  <script src="/js/display.js"></script>
+</body>
+</html>

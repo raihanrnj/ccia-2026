@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  scoreboard:
+    build: .
+    image: cerdas-cermat-scoreboard:latest
+    container_name: cerdas-cermat-app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - ADMIN_USER=admin
+      - ADMIN_PASS=admin123
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

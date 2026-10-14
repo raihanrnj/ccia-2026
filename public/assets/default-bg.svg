@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <!-- Dark Arena Radial Gradients -->
+    <radialGradient id="stageGlow" cx="50%" cy="85%" r="75%">
+      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.85"/>
+      <stop offset="35%" stop-color="#0f172a" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- Top Spotlights -->
+    <linearGradient id="beam1" x1="0%" y1="0%" x2="40%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="beam2" x1="100%" y1="0%" x2="60%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#818cf8" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="centerBeam" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Golden Floor Reflection -->
+    <linearGradient id="floorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.9"/>
+      <stop offset="15%" stop-color="#0f172a" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Grid Pattern for Stage Floor -->
+    <pattern id="stageGrid" width="80" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 0 40 L 80 40 M 80 0 L 80 40" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-opacity="0.15"/>
+    </pattern>
+
+    <!-- Glowing Hexagon / Motif -->
+    <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1920" height="1080" fill="url(#stageGlow)"/>
+
+  <!-- Geometric Architectural Arches in Background -->
+  <g opacity="0.3" stroke="#60a5fa" stroke-width="2" fill="none">
+    <ellipse cx="960" cy="950" rx="900" ry="400"/>
+    <ellipse cx="960" cy="950" rx="750" ry="320"/>
+    <ellipse cx="960" cy="950" rx="600" ry="240"/>
+    <ellipse cx="960" cy="950" rx="450" ry="170"/>
+  </g>
+
+  <!-- Stage Platform -->
+  <polygon points="120,1080 320,780 1600,780 1800,1080" fill="url(#floorGrad)"/>
+  <polygon points="120,1080 320,780 1600,780 1800,1080" fill="url(#stageGrid)"/>
+
+  <!-- Stage Edge Neon Lines -->
+  <line x1="320" y1="780" x2="1600" y2="780" stroke="#38bdf8" stroke-width="4" filter="url(#glowFilter)"/>
+  <line x1="320" y1="780" x2="120" y2="1080" stroke="#6366f1" stroke-width="2" opacity="0.6"/>
+  <line x1="1600" y1="780" x2="1800" y2="1080" stroke="#6366f1" stroke-width="2" opacity="0.6"/>
+
+  <!-- Volumetric Beams -->
+  <polygon points="200,0 350,0 750,900 100,900" fill="url(#beam1)"/>
+  <polygon points="1720,0 1570,0 1170,900 1820,900" fill="url(#beam2)"/>
+  <polygon points="900,0 1020,0 1200,850 720,850" fill="url(#centerBeam)"/>
+
+  <!-- Ambient Light Sparks / Particles -->
+  <circle cx="350" cy="400" r="3" fill="#38bdf8" opacity="0.6" filter="url(#glowFilter)"/>
+  <circle cx="480" cy="250" r="2" fill="#fbbf24" opacity="0.5"/>
+  <circle cx="850" cy="320" r="2.5" fill="#60a5fa" opacity="0.5"/>
+  <circle cx="1100" cy="280" r="2" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="1450" cy="380" r="3.5" fill="#38bdf8" opacity="0.6" filter="url(#glowFilter)"/>
+  <circle cx="1600" cy="220" r="2" fill="#fbbf24" opacity="0.5"/>
+  <circle cx="960" cy="500" r="4" fill="#fbbf24" opacity="0.4" filter="url(#glowFilter)"/>
+
+  <!-- Top Studio Light Fixtures -->
+  <g fill="#1e293b" stroke="#475569" stroke-width="2">
+    <rect x="250" y="0" width="80" height="25" rx="5"/>
+    <rect x="450" y="0" width="80" height="25" rx="5"/>
+    <rect x="920" y="0" width="80" height="25" rx="5"/>
+    <rect x="1390" y="0" width="80" height="25" rx="5"/>
+    <rect x="1590" y="0" width="80" height="25" rx="5"/>
+  </g>
+</svg>

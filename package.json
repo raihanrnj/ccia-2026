@@ -1,0 +1,13 @@
+{
+  "name": "cerdas-cermat-scoreboard",
+  "version": "1.0.0",
+  "description": "Aplikasi Live Scoreboard & Panel Admin untuk Perlombaan Cerdas Cermat",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["cerdas-cermat", "live-score", "scoreboard"],
+  "author": "",
+  "license": "ISC"
+}

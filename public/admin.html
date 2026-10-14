@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - Operator Nilai Cerdas Cermat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <!-- Top Navigation -->
+  <header class="admin-topbar">
+    <div class="topbar-left">
+      <div class="brand-logo">SMART QUIZ</div>
+      <div class="brand-info">
+        <h1 class="page-title">Panel Kontrol Operator Nilai</h1>
+        <p class="page-subtitle">Platform Penilaian Cerdas Cermat Real-time</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-badge" id="adminStatusBadge">
+        <span class="status-dot" id="adminStatusDot"></span>
+        <span id="adminStatusText">Menghubungkan...</span>
+      </div>
+      <a href="/" target="_blank" class="nav-btn primary-btn" title="Buka Layar Display TV / Proyektor">
+        <span>Buka Layar Display (TV)</span> ↗
+      </a>
+      <button type="button" class="nav-btn btn-logout" onclick="logoutAdmin()" title="Keluar dari Panel Admin">
+        <span>Logout</span> ⎋
+      </button>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div id="toastNotification" class="toast-notification"></div>
+
+  <!-- Main Content Layout -->
+  <main class="admin-main">
+
+    <!-- Dedicated Team Names Management Section -->
+    <section class="team-names-section">
+      <div class="team-names-header">
+        <div class="team-names-title-group">
+          <h2 class="section-heading">Pengaturan Nama Regu Peserta</h2>
+          <p class="section-subheading">Ketik nama kelompok di bawah ini lalu klik Simpan (otomatis langsung tampil pada Layar TV):</p>
+        </div>
+      </div>
+      <form id="teamNamesForm" onsubmit="saveTeamNamesForm(event)" class="team-names-grid">
+        <div class="team-name-card team-card-a">
+          <div class="team-name-card-header">
+            <span class="team-badge badge-a">A</span>
+            <label for="masterNameInput-A" class="team-label-text">Nama Regu A</label>
+          </div>
+          <input type="text" id="masterNameInput-A" class="master-name-control" value="REGU A" placeholder="Contoh: Tim Rajawali / SMA 1" required oninput="syncTeamNames('A', this.value)">
+        </div>
+
+        <div class="team-name-card team-card-b">
+          <div class="team-name-card-header">
+            <span class="team-badge badge-b">B</span>
+            <label for="masterNameInput-B" class="team-label-text">Nama Regu B</label>
+          </div>
+          <input type="text" id="masterNameInput-B" class="master-name-control" value="REGU B" placeholder="Contoh: Tim Garuda / SMA 2" required oninput="syncTeamNames('B', this.value)">
+        </div>
+
+        <div class="team-name-card team-card-c">
+          <div class="team-name-card-header">
+            <span class="team-badge badge-c">C</span>
+            <label for="masterNameInput-C" class="team-label-text">Nama Regu C</label>
+          </div>
+          <input type="text" id="masterNameInput-C" class="master-name-control" value="REGU C" placeholder="Contoh: Tim Elang / SMA 3" required oninput="syncTeamNames('C', this.value)">
+        </div>
+
+        <div class="team-name-btn-wrap">
+          <button type="submit" class="btn-save-names">Simpan Nama Regu</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Background Image Upload Section -->
+    <section class="bg-upload-section" style="margin: 0 auto 20px; max-width: 1200px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px 20px;">
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 0 0 auto;">
+          <h3 style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 700; color: #e2e8f0;">🖼️ Background Layar Display</h3>
+          <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Upload gambar untuk tampil di belakang skor</p>
+        </div>
+        <div id="bgPreview" style="flex: 0 0 auto; width: 80px; height: 45px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #1e293b; background-size: cover; background-position: center; overflow: hidden;"></div>
+        <div style="flex: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <label for="bgFileInput" style="cursor: pointer; padding: 8px 16px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; font-size: 0.85rem; font-weight: 700; border: none; transition: all 0.2s;">
+            📁 Pilih Gambar
+          </label>
+          <input type="file" id="bgFileInput" accept="image/*" style="display: none;" onchange="uploadBgImage(this)">
+          <button type="button" onclick="resetBgImage()" style="padding: 8px 14px; border-radius: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; font-size: 0.82rem; font-weight: 600; cursor: pointer;">✕ Hapus Background</button>
+          <span id="bgStatusText" style="font-size: 0.8rem; color: #94a3b8;"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Round Selector Navigation Tabs -->
+    <nav class="round-tab-nav">
+      <button type="button" class="tab-btn active" id="tabBtnRound1" onclick="switchRoundTab('1')">
+        <div class="tab-label-group">
+          <div class="tab-title-row">
+            <span class="tab-main-label">BABAK 1: PERTANYAAN CEPAT</span>
+            <span class="tab-live-status" id="tabLiveBadge1">SEDANG TAMPIL DI DISPLAY</span>
+          </div>
+          <span class="tab-sub-label">5 Pertanyaan per Regu (@20 Poin)</span>
+        </div>
+      </button>
+
+      <button type="button" class="tab-btn" id="tabBtnRound2" onclick="switchRoundTab('2')">
+        <div class="tab-label-group">
+          <div class="tab-title-row">
+            <span class="tab-main-label">BABAK 2: BABAK REBUTAN</span>
+            <span class="tab-live-status" id="tabLiveBadge2" style="display: none;">SEDANG TAMPIL DI DISPLAY</span>
+          </div>
+          <span class="tab-sub-label">Nilai Benar (+10 s/d +60) & Salah (-10 s/d -30)</span>
+        </div>
+      </button>
+    </nav>
+
+    <!-- ============================================== -->
+    <!-- TAB 1: BABAK PERTANYAAN CEPAT                  -->
+    <!-- ============================================== -->
+    <section class="round-content-view active" id="viewRound1">
+      <div class="round-banner round1-banner">
+        <div class="banner-text">
+          <h3>Babak 1: Pertanyaan Cepat</h3>
+          <p>Masing-masing kelompok mendapatkan 5 pertanyaan berturut-turut. Setiap jawaban benar bernilai <strong>+20 poin</strong>. Beri tanda centang pada soal yang dijawab benar, lalu klik <strong>Submit</strong>.</p>
+        </div>
+      </div>
+
+      <div class="teams-control-grid">
+        <!-- Regu A: Quick Questions -->
+        <div class="team-card card-a">
+          <div class="team-header">
+            <div class="badge-and-name">
+              <span class="team-badge badge-a">A</span>
+              <div class="team-meta">
+                <input type="text" id="quickNameInput-A" class="team-name-input" value="REGU A" onchange="syncTeamNames('A', this.value)" title="Ubah nama regu">
+                <span class="team-subtext">Kelompok 1</span>
+              </div>
+            </div>
+            <div class="current-score-box">
+              <span class="score-label">Total Skor</span>
+              <span class="score-val" id="quickCurrScore-A">0</span>
+            </div>
+          </div>
+
+          <div class="quick-questions-box">
+            <div class="box-title-row">
+              <span class="box-title">Daftar 5 Pertanyaan:</span>
+              <span class="summary-badge" id="quickSummary-A">0/5 Benar (+0)</span>
+            </div>
+
+            <div class="question-list" id="qList-A">
+              <!-- Q1 to Q5 -->
+              <label class="q-check-item">
+                <input type="checkbox" id="q-A-0" onchange="handleQuickCheckChange('A')">
+                <span class="q-number">Soal 1</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-A-1" onchange="handleQuickCheckChange('A')">
+                <span class="q-number">Soal 2</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-A-2" onchange="handleQuickCheckChange('A')">
+                <span class="q-number">Soal 3</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-A-3" onchange="handleQuickCheckChange('A')">
+                <span class="q-number">Soal 4</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-A-4" onchange="handleQuickCheckChange('A')">
+                <span class="q-number">Soal 5</span>
+                <span class="q-points">+20</span>
+              </label>
+            </div>
+
+            <div class="quick-card-actions">
+              <button type="button" class="btn-check-all" onclick="toggleAllQuestions('A', true)">Pilih Semua</button>
+              <button type="button" class="btn-check-none" onclick="toggleAllQuestions('A', false)">Kosongkan</button>
+            </div>
+
+            <button type="button" class="btn-submit-team btn-submit-a" onclick="submitQuickRound('A')">
+              <span>✓ Submit Nilai Babak 1 (Regu A)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Regu B: Quick Questions -->
+        <div class="team-card card-b">
+          <div class="team-header">
+            <div class="badge-and-name">
+              <span class="team-badge badge-b">B</span>
+              <div class="team-meta">
+                <input type="text" id="quickNameInput-B" class="team-name-input" value="REGU B" onchange="syncTeamNames('B', this.value)" title="Ubah nama regu">
+                <span class="team-subtext">Kelompok 2</span>
+              </div>
+            </div>
+            <div class="current-score-box">
+              <span class="score-label">Total Skor</span>
+              <span class="score-val" id="quickCurrScore-B">0</span>
+            </div>
+          </div>
+
+          <div class="quick-questions-box">
+            <div class="box-title-row">
+              <span class="box-title">Daftar 5 Pertanyaan:</span>
+              <span class="summary-badge" id="quickSummary-B">0/5 Benar (+0)</span>
+            </div>
+
+            <div class="question-list" id="qList-B">
+              <!-- Q1 to Q5 -->
+              <label class="q-check-item">
+                <input type="checkbox" id="q-B-0" onchange="handleQuickCheckChange('B')">
+                <span class="q-number">Soal 1</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-B-1" onchange="handleQuickCheckChange('B')">
+                <span class="q-number">Soal 2</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-B-2" onchange="handleQuickCheckChange('B')">
+                <span class="q-number">Soal 3</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-B-3" onchange="handleQuickCheckChange('B')">
+                <span class="q-number">Soal 4</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-B-4" onchange="handleQuickCheckChange('B')">
+                <span class="q-number">Soal 5</span>
+                <span class="q-points">+20</span>
+              </label>
+            </div>
+
+            <div class="quick-card-actions">
+              <button type="button" class="btn-check-all" onclick="toggleAllQuestions('B', true)">Pilih Semua</button>
+              <button type="button" class="btn-check-none" onclick="toggleAllQuestions('B', false)">Kosongkan</button>
+            </div>
+
+            <button type="button" class="btn-submit-team btn-submit-b" onclick="submitQuickRound('B')">
+              <span>✓ Submit Nilai Babak 1 (Regu B)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Regu C: Quick Questions -->
+        <div class="team-card card-c">
+          <div class="team-header">
+            <div class="badge-and-name">
+              <span class="team-badge badge-c">C</span>
+              <div class="team-meta">
+                <input type="text" id="quickNameInput-C" class="team-name-input" value="REGU C" onchange="syncTeamNames('C', this.value)" title="Ubah nama regu">
+                <span class="team-subtext">Kelompok 3</span>
+              </div>
+            </div>
+            <div class="current-score-box">
+              <span class="score-label">Total Skor</span>
+              <span class="score-val" id="quickCurrScore-C">0</span>
+            </div>
+          </div>
+
+          <div class="quick-questions-box">
+            <div class="box-title-row">
+              <span class="box-title">Daftar 5 Pertanyaan:</span>
+              <span class="summary-badge" id="quickSummary-C">0/5 Benar (+0)</span>
+            </div>
+
+            <div class="question-list" id="qList-C">
+              <!-- Q1 to Q5 -->
+              <label class="q-check-item">
+                <input type="checkbox" id="q-C-0" onchange="handleQuickCheckChange('C')">
+                <span class="q-number">Soal 1</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-C-1" onchange="handleQuickCheckChange('C')">
+                <span class="q-number">Soal 2</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-C-2" onchange="handleQuickCheckChange('C')">
+                <span class="q-number">Soal 3</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-C-3" onchange="handleQuickCheckChange('C')">
+                <span class="q-number">Soal 4</span>
+                <span class="q-points">+20</span>
+              </label>
+              <label class="q-check-item">
+                <input type="checkbox" id="q-C-4" onchange="handleQuickCheckChange('C')">
+                <span class="q-number">Soal 5</span>
+                <span class="q-points">+20</span>
+              </label>
+            </div>
+
+            <div class="quick-card-actions">
+              <button type="button" class="btn-check-all" onclick="toggleAllQuestions('C', true)">Pilih Semua</button>
+              <button type="button" class="btn-check-none" onclick="toggleAllQuestions('C', false)">Kosongkan</button>
+            </div>
+
+            <button type="button" class="btn-submit-team btn-submit-c" onclick="submitQuickRound('C')">
+              <span>✓ Submit Nilai Babak 1 (Regu C)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Action Bar for Round 1 -->
+      <section class="master-action-bar">
+        <div class="master-action-content">
+          <div class="master-action-info">
+            <h3>Submit Babak 1 Semua Kelompok Sekaligus</h3>
+            <p>Centang soal yang dijawab benar pada masing-masing regu di atas, lalu klik tombol ini untuk mengirim nilai seluruh kelompok sekaligus ke layar live score.</p>
+          </div>
+          <div class="master-action-buttons">
+            <button type="button" class="btn-submit-all" onclick="submitAllQuickRounds()">
+              SUBMIT BABAK 1 SEMUA REGU KE DISPLAY
+            </button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 2: BABAK PERTANYAAN REBUTAN                -->
+    <!-- ============================================== -->
+    <section class="round-content-view" id="viewRound2">
+      <div class="round-banner round2-banner">
+        <div class="banner-text">
+          <h3>Babak 2: Babak Rebutan</h3>
+          <p>Pertanyaan fleksibel untuk ketiga kelompok. Benar mendapatkan <strong>+10, +20, +30, +40, +50, +60</strong>. Salah mendapatkan pengurangan progresif <strong>-10, -15, -20, -25, -30</strong>.</p>
+        </div>
+      </div>
+
+      <div class="teams-control-grid">
+        <!-- Regu A: Rebutan -->
+        <div class="team-card card-a">
+          <div class="team-header">
+            <div class="badge-and-name">
+              <span class="team-badge badge-a">A</span>
+              <div class="team-meta">
+                <input type="text" id="nameInput-A" class="team-name-input" value="REGU A" onchange="syncTeamNames('A', this.value)" title="Ubah nama regu">
+                <span class="team-subtext">Kelompok 1</span>
+              </div>
+            </div>
+            <div class="current-score-box">
+              <span class="score-label">Total Skor</span>
+              <span class="score-val" id="currScore-A">0</span>
+            </div>
+          </div>
+
+          <div class="score-input-section">
+            <label class="field-label" for="deltaInput-A">Pilih Nilai Jawaban Benar (+):</label>
+            <!-- Positive Chips: 10, 20, 30, 40, 50, 60 -->
+            <div class="quick-chips">
+              <button type="button" class="chip chip-pos" onclick="setDelta('A', 10)">+10</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('A', 20)">+20</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('A', 30)">+30</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('A', 40)">+40</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('A', 50)">+50</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('A', 60)">+60</button>
+            </div>
+
+            <label class="field-label" for="deltaInput-A">Pilih Nilai Jawaban Salah (-):</label>
+            <!-- Negative Chips progressive: -10, -15, -20, -25, -30 -->
+            <div class="quick-chips">
+              <button type="button" class="chip chip-neg" onclick="setDelta('A', -10)">-10</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('A', -15)">-15</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('A', -20)">-20</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('A', -25)">-25</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('A', -30)">-30</button>
+            </div>
+
+            <label class="field-label" for="deltaInput-A">Atau Ketik / Koreksi Nilai Manual:</label>
+            <div class="input-with-steppers">
+              <button type="button" class="btn-step" onclick="stepDelta('A', -10)">-10</button>
+              <button type="button" class="btn-step" onclick="stepDelta('A', -5)">-5</button>
+              <input type="number" id="deltaInput-A" class="delta-field" placeholder="0" step="5">
+              <button type="button" class="btn-step" onclick="stepDelta('A', 5)">+5</button>
+              <button type="button" class="btn-step" onclick="stepDelta('A', 10)">+10</button>
+            </div>
+
+            <!-- Direct Submit for Team A -->
+            <button type="button" class="btn-submit-team btn-submit-a" onclick="submitSingleTeam('A')">
+              <span>✓ Simpan Nilai Rebutan Regu A</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Regu B: Rebutan -->
+        <div class="team-card card-b">
+          <div class="team-header">
+            <div class="badge-and-name">
+              <span class="team-badge badge-b">B</span>
+              <div class="team-meta">
+                <input type="text" id="nameInput-B" class="team-name-input" value="REGU B" onchange="syncTeamNames('B', this.value)" title="Ubah nama regu">
+                <span class="team-subtext">Kelompok 2</span>
+              </div>
+            </div>
+            <div class="current-score-box">
+              <span class="score-label">Total Skor</span>
+              <span class="score-val" id="currScore-B">0</span>
+            </div>
+          </div>
+
+          <div class="score-input-section">
+            <label class="field-label" for="deltaInput-B">Pilih Nilai Jawaban Benar (+):</label>
+            <!-- Positive Chips: 10, 20, 30, 40, 50, 60 -->
+            <div class="quick-chips">
+              <button type="button" class="chip chip-pos" onclick="setDelta('B', 10)">+10</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('B', 20)">+20</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('B', 30)">+30</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('B', 40)">+40</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('B', 50)">+50</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('B', 60)">+60</button>
+            </div>
+
+            <label class="field-label" for="deltaInput-B">Pilih Nilai Jawaban Salah (-):</label>
+            <!-- Negative Chips progressive: -10, -15, -20, -25, -30 -->
+            <div class="quick-chips">
+              <button type="button" class="chip chip-neg" onclick="setDelta('B', -10)">-10</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('B', -15)">-15</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('B', -20)">-20</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('B', -25)">-25</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('B', -30)">-30</button>
+            </div>
+
+            <label class="field-label" for="deltaInput-B">Atau Ketik / Koreksi Nilai Manual:</label>
+            <div class="input-with-steppers">
+              <button type="button" class="btn-step" onclick="stepDelta('B', -10)">-10</button>
+              <button type="button" class="btn-step" onclick="stepDelta('B', -5)">-5</button>
+              <input type="number" id="deltaInput-B" class="delta-field" placeholder="0" step="5">
+              <button type="button" class="btn-step" onclick="stepDelta('B', 5)">+5</button>
+              <button type="button" class="btn-step" onclick="stepDelta('B', 10)">+10</button>
+            </div>
+
+            <!-- Direct Submit for Team B -->
+            <button type="button" class="btn-submit-team btn-submit-b" onclick="submitSingleTeam('B')">
+              <span>✓ Simpan Nilai Rebutan Regu B</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Regu C: Rebutan -->
+        <div class="team-card card-c">
+          <div class="team-header">
+            <div class="badge-and-name">
+              <span class="team-badge badge-c">C</span>
+              <div class="team-meta">
+                <input type="text" id="nameInput-C" class="team-name-input" value="REGU C" onchange="syncTeamNames('C', this.value)" title="Ubah nama regu">
+                <span class="team-subtext">Kelompok 3</span>
+              </div>
+            </div>
+            <div class="current-score-box">
+              <span class="score-label">Total Skor</span>
+              <span class="score-val" id="currScore-C">0</span>
+            </div>
+          </div>
+
+          <div class="score-input-section">
+            <label class="field-label" for="deltaInput-C">Pilih Nilai Jawaban Benar (+):</label>
+            <!-- Positive Chips: 10, 20, 30, 40, 50, 60 -->
+            <div class="quick-chips">
+              <button type="button" class="chip chip-pos" onclick="setDelta('C', 10)">+10</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('C', 20)">+20</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('C', 30)">+30</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('C', 40)">+40</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('C', 50)">+50</button>
+              <button type="button" class="chip chip-pos" onclick="setDelta('C', 60)">+60</button>
+            </div>
+
+            <label class="field-label" for="deltaInput-C">Pilih Nilai Jawaban Salah (-):</label>
+            <!-- Negative Chips progressive: -10, -15, -20, -25, -30 -->
+            <div class="quick-chips">
+              <button type="button" class="chip chip-neg" onclick="setDelta('C', -10)">-10</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('C', -15)">-15</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('C', -20)">-20</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('C', -25)">-25</button>
+              <button type="button" class="chip chip-neg" onclick="setDelta('C', -30)">-30</button>
+            </div>
+
+            <label class="field-label" for="deltaInput-C">Atau Ketik / Koreksi Nilai Manual:</label>
+            <div class="input-with-steppers">
+              <button type="button" class="btn-step" onclick="stepDelta('C', -10)">-10</button>
+              <button type="button" class="btn-step" onclick="stepDelta('C', -5)">-5</button>
+              <input type="number" id="deltaInput-C" class="delta-field" placeholder="0" step="5">
+              <button type="button" class="btn-step" onclick="stepDelta('C', 5)">+5</button>
+              <button type="button" class="btn-step" onclick="stepDelta('C', 10)">+10</button>
+            </div>
+
+            <!-- Direct Submit for Team C -->
+            <button type="button" class="btn-submit-team btn-submit-c" onclick="submitSingleTeam('C')">
+              <span>✓ Simpan Nilai Rebutan Regu C</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Action Bar for Round 2 -->
+      <section class="master-action-bar">
+        <div class="master-action-content">
+          <div class="master-action-info">
+            <h3>Submit Bersama (1 Tombol)</h3>
+            <p>Ketik perubahan pada kolom di atas, lalu klik tombol ini untuk mengirim pembaruan seluruh kelompok sekaligus ke layar live score.</p>
+          </div>
+          <div class="master-action-buttons">
+            <button type="button" class="btn-clear-all" onclick="clearAllInputs()">Bersihkan Input</button>
+            <button type="button" class="btn-submit-all" onclick="submitAllTeams()">
+              SUBMIT SEMUA PERUBAHAN KE DISPLAY
+            </button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Bottom Management Grid: Settings & History -->
+    <section class="admin-management-grid">
+      <!-- Settings Panel -->
+      <div class="management-card">
+        <h2 class="card-title">Pengaturan Acara & Background</h2>
+
+        <form id="settingsForm" onsubmit="saveSettings(event)" class="settings-form">
+          <div class="form-group">
+            <label for="inputTitle">Judul Acara / Lomba:</label>
+            <input type="text" id="inputTitle" value="FINAL CERDAS CERMAT" required>
+          </div>
+
+          <div class="form-group">
+            <label for="inputSubtitle">Subjudul / Edisi:</label>
+            <input type="text" id="inputSubtitle" value="EDISI 2026">
+          </div>
+
+          <div class="form-group">
+            <label>Gambar Background Layar Display:</label>
+            <div class="bg-selection-box">
+              <div class="bg-preview-wrapper">
+                <img id="bgPreview" src="/assets/default-bg.svg" alt="Preview Background">
+              </div>
+              <div class="bg-controls">
+                <label class="btn-file-upload">
+                  Unggah Gambar Baru
+                  <input type="file" id="bgFileInput" accept="image/*" onchange="handleBgUpload(event)">
+                </label>
+                <button type="button" class="btn-secondary" onclick="restoreDefaultBg()">Kembalikan Background Default</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Simpan Pengaturan Display</button>
+          </div>
+        </form>
+
+        <hr class="divider">
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+          <h3>Tindakan Khusus</h3>
+          <div class="danger-actions">
+            <button type="button" class="btn-undo" onclick="undoLastScore()" title="Batalkan satu perubahan skor terakhir">
+              Batalkan Nilai Terakhir (Undo)
+            </button>
+            <button type="button" class="btn-reset" onclick="confirmResetScores()" title="Reset semua nilai menjadi 0">
+              Reset Semua Skor ke 0
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History / Activity Log with Item Deletion Feature -->
+      <div class="management-card">
+        <div class="card-header-flex">
+          <h2 class="card-title">Riwayat Nilai & Aktivitas</h2>
+          <span class="history-count" id="historyCount">0 catatan</span>
+        </div>
+        <p class="card-subtext">Daftar transaksi nilai. Klik tombol Hapus pada baris tertentu jika salah input untuk membatalkan skor tersebut secara langsung.</p>
+
+        <div class="history-table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Babak</th>
+                <th>Regu</th>
+                <th>Perubahan</th>
+                <th>Total</th>
+                <th style="text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr>
+                <td colspan="6" class="empty-cell">Belum ada riwayat penilaian</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/sound.js"></script>
+  <script>
+    // Background upload functions
+    async function uploadBgImage(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById('bgStatusText');
+      statusEl.textContent = 'Mengupload...';
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const res = await fetch('/api/upload-bg', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: e.target.result })
+          });
+          const data = await res.json();
+          if (data.success) {
+            statusEl.textContent = '✅ Background diperbarui!';
+            document.getElementById('bgPreview').style.backgroundImage = `url("${data.backgroundImage}")`;
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+          } else {
+            statusEl.textContent = '❌ Gagal: ' + (data.error || 'Error');
+          }
+        } catch(err) {
+          statusEl.textContent = '❌ Error: ' + err.message;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function resetBgImage() {
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ backgroundImage: '' })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('bgPreview').style.backgroundImage = '';
+          document.getElementById('bgStatusText').textContent = '✅ Background dihapus';
+          setTimeout(() => { document.getElementById('bgStatusText').textContent = ''; }, 3000);
+        }
+      } catch(err) {
+        document.getElementById('bgStatusText').textContent = '❌ Error';
+      }
+    }
+  </script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
